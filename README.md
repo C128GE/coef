@@ -1,2 +1,2 @@
-# coef
+# COEF
 Chronicles of Earthfall
