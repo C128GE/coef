@@ -1,0 +1,8 @@
+.source.txt
+*.code-workspace
+.vscode/tasks.json
+build/*.prg
+build/*.d64
+out/*.prg
+out/*.sym
+out/*.vs
