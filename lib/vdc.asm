@@ -1,0 +1,1 @@
+.const VDC            = $D600
