@@ -24,16 +24,47 @@ gameInit:
     libSetBgColour0(WHITE)
     libFillScreen(VIC_BANK1_SCREEN,'a')
 
-    libMMUSetBankConf(15)   
-    jsr $CD2E           // Switch to 80 column screen
+//    libMMUSetBankConf(15)   
+//    jsr $CD2E       // SWAPPER - Switch to 80 column screen
 
     ldx #18         //VDC Register 18 - Update VDC address (high byte)
     lda #$20        //High byte of Address $2000 - start of character generator data
     jsr VDCWrite    //Write to the VDC register
-    ldx #19         //VDC Register 19 - Update VDC address (low byte)
+    inx             //VDC Register 19 - Update VDC address (low byte)
     lda #$00        //Low byte of address $2000 - start of character generator data
     jsr VDCWrite
-    
+    ldx #31         //Data register - holds data to be stored in RAM starting at $2000, in this case.
+    ldy #0          //Index into our new character shape
+
+Char_Loop:
+    lda Character_Shape,y
+    jsr VDCWrite
+
+//    jsr VDCWrite    //A second write will advance the RAM address by 1 automatically by the VDC, thus making the char 2x the size
+    iny             //Next byte; ie next row of character
+    cpy #8          //Stop at 8 bytes
+    bcc Char_Loop
+
+Display:
+    ldx #18
+    lda #$00
+    jsr VDCWrite
+    ldx #19
+    lda #$00
+    jsr VDCWrite
+    ldx #31
+    lda #$00
+    jsr VDCWrite
+Fill80:
+    adc #$01   
+    jsr VDCWrite
+    cmp #255
+    bne Fill80
+
+    lda #$40
+    sta VIC_BANK1_SCREEN
+
+    libSetBorderColour(BLACK)
 
 gameLoop:
     libWaitRaster(255)
@@ -41,8 +72,8 @@ gameLoop:
 
 //Define a character pattern (e.g., a small ship)
 Character_Shape:
-    .byte %00111100  // ####
-    .byte %01000010  // #    #
+    .byte %00111100  //   ####
+    .byte %01000010  //  #    #
     .byte %10100101  // # #  # #
     .byte %10111101  // # #### #
     .byte %10000001  // #      #
