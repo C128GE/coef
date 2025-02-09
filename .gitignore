@@ -6,3 +6,5 @@ build/*.d64
 out/*.prg
 out/*.sym
 out/*.vs
+out/*.dbg
+

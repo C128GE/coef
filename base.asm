@@ -1,7 +1,7 @@
 #import "lib\system.asm"
 #import "lib\vic2.asm"
 #import "lib\mmu.asm"
-
+#import "lib\vdc.asm"
 
 //===============================================================================
 // Memory map
@@ -20,10 +20,22 @@ gameInit:
 
     libMMUSetBankConf(16) // RAM0, no basic rom, all ram exept for IO, kernal
     libSetVICBank(1)   // VIC Bank 1 - $4000 - $7FFF
-    libSetBorderColour(BLUE)
-    libSetBgColour0(WHITE)
+    libSetBorderColour(BLACK)
+    libSetBgColour0(BLACK)
     libFillScreen(VIC_BANK1_SCREEN,'a')
+
+    libVDCChangeCharSet()
+    libVDCDisplayCharSet()
+
+    lda #$00 // @ character
+    sta VIC_BANK1_SCREEN
+
 
 gameLoop:
     libWaitRaster(255)
     jmp gameLoop
+
+
+
+
+
